@@ -14,10 +14,12 @@ def draw_rand_label(x, label_list):
 
 class Q1:
 	def feature_means(self, iris):
-		return np.mean(iris.data, axis=0)
+		features = iris[:, :-1]
+		return np.mean(features, axis=0)
 
 	def empirical_covariance(self, iris):
-		return np.cov(iris.data, rowvar=False)
+		features = iris[:, :-1]  # Exclude the last column (class labels)
+		return np.cov(features, rowvar=False)
 
 	def feature_means_class_1(self, iris):
 		features = iris[:, :-1]

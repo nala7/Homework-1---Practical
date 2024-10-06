@@ -109,8 +109,31 @@ class SoftRBFParzen:
 
 		return class_predictions
 
+def is_in_training_set(i):
+	return i == 0 or i%5 == 0 or i%5 == 1 or i%5 == 2
+
+def is_in_validation_set(i):
+	return i%5 == 3
+
+def is_in_test_set(i):
+	return i%5 == 4
+
+
 def split_dataset(iris):
-	pass
+	training_set = []
+	validation_set = []
+	test_set = []
+
+	for i, row in enumerate(iris):
+		if is_in_training_set(i):
+			training_set.append(row)
+		if is_in_validation_set(i):
+			validation_set.append(row)
+		if is_in_test_set(i):
+			test_set.append(row)
+
+	result = (training_set, validation_set, test_set)
+	return result
 
 
 class ErrorRate:
@@ -133,9 +156,3 @@ def get_test_errors(iris):
 
 def random_projections(X, A):
 	pass
-
-
-hp = SoftRBFParzen(sigma=1.0)
-hp.fit(iris[:, :-1], iris[:, -1:])
-res = hp.predict(iris[:, :-1])
-print(res)

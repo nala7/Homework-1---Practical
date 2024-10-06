@@ -70,7 +70,7 @@ class HardParzen:
 			if np.sum(count) == 0:
 				class_predictions[i] = draw_rand_label(current_point, self.label_list)
 			else:
-				class_predictions[i] = np.argmax(count)
+				class_predictions[i] = np.argmax(count) + 1
 
 		return class_predictions
 

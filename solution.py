@@ -47,6 +47,7 @@ class HardParzen:
 		self.h = h
 		self.train_inputs = None
 		self.train_labels = None
+		self.n_classes = None
 
 	def fit(self, train_inputs, train_labels):
 		self.label_list = np.unique(train_labels)
@@ -78,14 +79,35 @@ class HardParzen:
 class SoftRBFParzen:
 	def __init__(self, sigma):
 		self.sigma  = sigma
+		self.label_list = None
+		self.train_inputs = None
+		self.train_labels = None
+		self.n_classes = None
 
 	def fit(self, train_inputs, train_labels):
-		# self.label_list = np.unique(train_labels)
-		pass
+		self.label_list = np.unique(train_labels)
+		self.train_inputs = train_inputs
+		self.train_labels = train_labels
+		self.n_classes = len(self.label_list)
+
+	def rbf_kernel(self, distance):
+		return np.exp(- (distance ** 2) / (2 * self.sigma ** 2))
 
 	def predict(self, test_data):
-		pass
+		class_predictions = np.zeros(test_data.shape[0])
 
+		for i, current_point in enumerate(test_data):
+			weights = np.zeros(self.n_classes)
+
+			for j, train_point in enumerate(self.train_inputs):
+				distance = manhattan_distance(current_point, train_point)
+				current_weight = self.rbf_kernel(distance)
+				current_label = int(self.train_labels[j])
+				weights[current_label - 1] += current_weight
+
+			class_predictions[i] = np.argmax(weights) + 1
+
+		return class_predictions
 
 def split_dataset(iris):
 	pass
@@ -113,7 +135,7 @@ def random_projections(X, A):
 	pass
 
 
-hp = HardParzen(h=0.1)
+hp = SoftRBFParzen(sigma=1.0)
 hp.fit(iris[:, :-1], iris[:, -1:])
 res = hp.predict(iris[:, :-1])
 print(res)

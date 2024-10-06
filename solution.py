@@ -65,7 +65,7 @@ class HardParzen:
 				distance = manhattan_distance(current_point, train_point)
 				if distance < self.h:
 					label = int(self.train_labels[j])
-					count[label - 1] += 1
+					count[label] += 1
 
 			prediction = np.argmax(count)
 			class_predictions[i] = prediction

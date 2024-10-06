@@ -37,16 +37,39 @@ class Q1:
 		return np.cov(class_1_data, rowvar=False)
 
 
+def manhattan_distance(x, p):
+	return np.sum(np.abs(x - p))
+
+
 class HardParzen:
 	def __init__(self, h):
+		self.label_list = None
 		self.h = h
+		self.train_inputs = None
+		self.train_labels = None
 
 	def fit(self, train_inputs, train_labels):
-		# self.label_list = np.unique(train_labels)
-		pass
+		self.label_list = np.unique(train_labels)
+		self.train_inputs = train_inputs
+		self.train_labels = train_labels
+		self.n_classes = len(self.label_list)
+
 
 	def predict(self, test_data):
-		pass
+		class_predictions = np.zeros(test_data.shape[0])
+
+		for i, current_point in enumerate(test_data):
+			count = np.zeros(self.n_classes)
+
+			for j, train_point in enumerate(self.train_inputs):
+				distance = manhattan_distance(current_point, train_point)
+				if distance < self.h:
+					label = int(self.train_labels[j])
+					count[label - 1] += 1
+
+			prediction = np.argmax(count)
+			class_predictions[i] = prediction
+		return class_predictions
 
 
 class SoftRBFParzen:
@@ -87,6 +110,7 @@ def random_projections(X, A):
 	pass
 
 
-q1 = Q1()
-
-print(q1.empirical_covariance_class_1(iris))
+hp = HardParzen(h=0.1)
+hp.fit(iris[:, :-1], iris[:, -1:])
+res = hp.predict(iris[:, :-1])
+print(res)

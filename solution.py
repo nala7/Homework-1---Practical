@@ -186,6 +186,5 @@ def get_test_errors(iris):
 
 
 def random_projections(X, A):
-	pass
-
-
+	projection = (1 / np.sqrt(2)) * np.dot(X, A)
+	return projection

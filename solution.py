@@ -124,13 +124,13 @@ def split_dataset(iris):
 	validation_set = []
 	test_set = []
 
-	for i, row in enumerate(iris):
+	for i in range(len(iris)):
 		if is_in_training_set(i):
-			training_set.append(row)
+			training_set.append(iris[i])
 		if is_in_validation_set(i):
-			validation_set.append(row)
+			validation_set.append(iris[i])
 		if is_in_test_set(i):
-			test_set.append(row)
+			test_set.append(iris[i])
 
 	result = (training_set, validation_set, test_set)
 	return result
@@ -156,3 +156,10 @@ def get_test_errors(iris):
 
 def random_projections(X, A):
 	pass
+
+
+res = split_dataset(iris)
+print(type(res))
+print(type(res[0]), type(res[1]), type(res[2]))
+print(type(res[0][0]), type(res[1][0]), type(res[2][0]))
+print((res[0][0]), (res[1][0]), (res[2][0]))

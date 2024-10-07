@@ -139,10 +139,20 @@ class ErrorRate:
 		self.y_val = y_val
 
 	def hard_parzen(self, h):
-		pass
+		hp = HardParzen(h)
+		hp.fit(self.x_train, self.y_train)
+		predictions = hp.predict(self.x_val)
+		error_rate = np.mean(predictions != self.y_val)
+		return error_rate
+
+
 
 	def soft_parzen(self, sigma):
-		pass
+		sp = SoftRBFParzen(sigma)
+		sp.fit(self.x_train, self.y_train)
+		predictions = sp.predict(self.x_val)
+		error_rate = np.mean(predictions != self.y_val)
+		return error_rate
 
 
 def get_test_errors(iris):
@@ -153,8 +163,12 @@ def random_projections(X, A):
 	pass
 
 
-res = split_dataset(iris)
-print(type(res))
-print(type(res[0]), type(res[1]), type(res[2]))
-print(type(res[0][0]), type(res[1][0]), type(res[2][0]))
-print((res[0][0]), (res[1][0]), (res[2][0]))
+training_set, validation_set, test_set = split_dataset(iris)
+x_train = training_set[:, :-1]
+y_train = training_set[:, -1]
+x_val = validation_set[:, :-1]
+y_val = validation_set[:, -1]
+error_rate = ErrorRate(x_train, y_train, x_val, y_val)
+sp_error_rate = error_rate.soft_parzen(0.6)
+print(sp_error_rate)
+

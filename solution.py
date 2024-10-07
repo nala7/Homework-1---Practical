@@ -1,3 +1,4 @@
+import sys
 import numpy as np
 iris = np.genfromtxt('iris.txt')
 
@@ -156,19 +157,37 @@ class ErrorRate:
 
 
 def get_test_errors(iris):
-	pass
+	training_set, validation_set, test_set = split_dataset(iris)
+	x_train = training_set[:, :-1]
+	y_train = training_set[:, -1]
+	x_val = validation_set[:, :-1]
+	y_val = validation_set[:, -1]
+	error_rate = ErrorRate(x_train, y_train, x_val, y_val)
+
+	h_values = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 3.0, 10.0, 20.0]
+	h_star = -1
+	min_error = sys.float_info.max
+	for h in h_values:
+		current_error = error_rate.hard_parzen(h)
+		if current_error < min_error:
+			min_error = current_error
+			h_star = h
+
+	sigma_values = [0.01, 0.1, 0.2, 0.3, 0.4, 0.5, 1.0, 3.0, 10.0, 20.0]
+	sigma_star = -1
+	min_error = sys.float_info.max
+	for sigma in sigma_values:
+		current_error = error_rate.soft_parzen(sigma)
+		if current_error < min_error:
+			min_error = current_error
+			sigma_star = sigma
+
+	return [h_star, sigma_star]
 
 
 def random_projections(X, A):
 	pass
 
 
-training_set, validation_set, test_set = split_dataset(iris)
-x_train = training_set[:, :-1]
-y_train = training_set[:, -1]
-x_val = validation_set[:, :-1]
-y_val = validation_set[:, -1]
-error_rate = ErrorRate(x_train, y_train, x_val, y_val)
-sp_error_rate = error_rate.soft_parzen(0.6)
-print(sp_error_rate)
+print(get_test_errors(iris))
 

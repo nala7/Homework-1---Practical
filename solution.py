@@ -109,15 +109,6 @@ class SoftRBFParzen:
 
 		return class_predictions
 
-def is_in_training_set(i):
-	return i == 0 or i%5 == 0 or i%5 == 1 or i%5 == 2
-
-def is_in_validation_set(i):
-	return i%5 == 3
-
-def is_in_test_set(i):
-	return i%5 == 4
-
 
 def split_dataset(iris):
 	training_set = []
@@ -125,12 +116,16 @@ def split_dataset(iris):
 	test_set = []
 
 	for i in range(len(iris)):
-		if is_in_training_set(i):
+		if i % 5 in [0, 1, 2]:
 			training_set.append(iris[i])
-		if is_in_validation_set(i):
+		elif i % 5 == 3:
 			validation_set.append(iris[i])
-		if is_in_test_set(i):
+		elif i % 5 == 4:
 			test_set.append(iris[i])
+
+	training_set = np.array(training_set)
+	validation_set = np.array(validation_set)
+	test_set = np.array(test_set)
 
 	result = (training_set, validation_set, test_set)
 	return result
